@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ShangbaoDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.zhuhu_id as zhuhuId
+        ,a.gongzuo_id as gongzuoId
+        ,a.shangbao_content as shangbaoContent
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ShangbaoView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,gongzuo.gongzuo_danhao_number as gongzuoDanhaoNumber
+        ,gongzuo.gongzuo_name as gongzuoName
+        ,gongzuo.gongzuo_phone as gongzuoPhone
+        ,gongzuo.gongzuo_id_number as gongzuoIdNumber
+        ,gongzuo.gongzuo_address as gongzuoAddress
+        ,gongzuo.gongzuo_photo as gongzuoPhoto
+        ,gongzuo.zhiwu_types as zhiwuTypes
+        ,gongzuo.quyu as quyu
+        ,gongzuo.gongzuo_content as gongzuoContent
+        ,gongzuo.gongzuo_types as gongzuoTypes
+        ,zhuhu.zhuhu_danhao_number as zhuhuDanhaoNumber
+        ,zhuhu.zhuhu_name as zhuhuName
+        ,zhuhu.zhuhu_phone as zhuhuPhone
+        ,zhuhu.zhuhu_id_number as zhuhuIdNumber
+        ,zhuhu.zhuhu_address as zhuhuAddress
+        ,zhuhu.zhuhu_photo as zhuhuPhoto
+        ,zhuhu.zhuhu_age as zhuhuAge
+        ,zhuhu.zhuhu_yimiao_types as zhuhuYimiaoTypes
+        ,zhuhu.zhuhu_laiyuandi as zhuhuLaiyuandi
+        ,zhuhu.zhuhu_hesuan_types as zhuhuHesuanTypes
+        ,zhuhu.zhuhu_xingcheng as zhuhuXingcheng
+        ,zhuhu.zhuhu_content as zhuhuContent
+        ,zhuhu.zhuhu_types as zhuhuTypes
+        ,zhuhu.zhuhu_time as zhuhuTime
+        ,zhuhu.insert_time as insertTime
+
+        FROM shangbao  a
+        left JOIN gongzuo gongzuo ON a.gongzuo_id = gongzuo.id
+        left JOIN zhuhu zhuhu ON a.zhuhu_id = zhuhu.id
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.zhuhuId != null">
+                and a.zhuhu_id = #{params.zhuhuId}
+            </if>
+            <if test="params.gongzuoId != null">
+                and a.gongzuo_id = #{params.gongzuoId}
+            </if>
+            <if test=" params.shangbaoContent != '' and params.shangbaoContent != null and params.shangbaoContent != 'null' ">
+                and a.shangbao_content like CONCAT('%',#{params.shangbaoContent},'%')
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+            <if test=" params.gongzuoDanhaoNumber != '' and params.gongzuoDanhaoNumber != null and params.gongzuoDanhaoNumber != 'null' ">
+                and gongzuo.gongzuo_danhao_number like CONCAT('%',#{params.gongzuoDanhaoNumber},'%')
+            </if>
+            <if test=" params.gongzuoName != '' and params.gongzuoName != null and params.gongzuoName != 'null' ">
+                and gongzuo.gongzuo_name like CONCAT('%',#{params.gongzuoName},'%')
+            </if>
+            <if test=" params.gongzuoPhone != '' and params.gongzuoPhone != null and params.gongzuoPhone != 'null' ">
+                and gongzuo.gongzuo_phone like CONCAT('%',#{params.gongzuoPhone},'%')
+            </if>
+            <if test=" params.gongzuoIdNumber != '' and params.gongzuoIdNumber != null and params.gongzuoIdNumber != 'null' ">
+                and gongzuo.gongzuo_id_number like CONCAT('%',#{params.gongzuoIdNumber},'%')
+            </if>
+            <if test=" params.gongzuoAddress != '' and params.gongzuoAddress != null and params.gongzuoAddress != 'null' ">
+                and gongzuo.gongzuo_address like CONCAT('%',#{params.gongzuoAddress},'%')
+            </if>
+            <if test="params.zhiwuTypes != null">
+                and gongzuo.zhiwu_types = #{params.zhiwuTypes}
+            </if>
+
+            <if test=" params.quyu != '' and params.quyu != null and params.quyu != 'null' ">
+                and gongzuo.quyu like CONCAT('%',#{params.quyu},'%')
+            </if>
+            <if test=" params.gongzuoContent != '' and params.gongzuoContent != null and params.gongzuoContent != 'null' ">
+                and gongzuo.gongzuo_content like CONCAT('%',#{params.gongzuoContent},'%')
+            </if>
+            <if test="params.gongzuoTypes != null">
+                and gongzuo.gongzuo_types = #{params.gongzuoTypes}
+            </if>
+
+            <if test=" params.zhuhuDanhaoNumber != '' and params.zhuhuDanhaoNumber != null and params.zhuhuDanhaoNumber != 'null' ">
+                and zhuhu.zhuhu_danhao_number like CONCAT('%',#{params.zhuhuDanhaoNumber},'%')
+            </if>
+            <if test=" params.zhuhuName != '' and params.zhuhuName != null and params.zhuhuName != 'null' ">
+                and zhuhu.zhuhu_name like CONCAT('%',#{params.zhuhuName},'%')
+            </if>
+            <if test=" params.zhuhuPhone != '' and params.zhuhuPhone != null and params.zhuhuPhone != 'null' ">
+                and zhuhu.zhuhu_phone like CONCAT('%',#{params.zhuhuPhone},'%')
+            </if>
+            <if test=" params.zhuhuIdNumber != '' and params.zhuhuIdNumber != null and params.zhuhuIdNumber != 'null' ">
+                and zhuhu.zhuhu_id_number like CONCAT('%',#{params.zhuhuIdNumber},'%')
+            </if>
+            <if test=" params.zhuhuAddress != '' and params.zhuhuAddress != null and params.zhuhuAddress != 'null' ">
+                and zhuhu.zhuhu_address like CONCAT('%',#{params.zhuhuAddress},'%')
+            </if>
+            <if test="params.zhuhuAgeStart != null ">
+                <![CDATA[  and zhuhu.zhuhu_age >= #{params.zhuhuAgeStart}   ]]>
+            </if>
+            <if test="params.zhuhuAgeEnd != null ">
+                <![CDATA[  and zhuhu.zhuhu_age <= #{params.zhuhuAgeEnd}   ]]>
+            </if>
+            <if test="params.zhuhuYimiaoTypes != null">
+                and zhuhu.zhuhu_yimiao_types = #{params.zhuhuYimiaoTypes}
+            </if>
+
+            <if test=" params.zhuhuLaiyuandi != '' and params.zhuhuLaiyuandi != null and params.zhuhuLaiyuandi != 'null' ">
+                and zhuhu.zhuhu_laiyuandi like CONCAT('%',#{params.zhuhuLaiyuandi},'%')
+            </if>
+            <if test="params.zhuhuHesuanTypes != null">
+                and zhuhu.zhuhu_hesuan_types = #{params.zhuhuHesuanTypes}
+            </if>
+
+            <if test=" params.zhuhuXingcheng != '' and params.zhuhuXingcheng != null and params.zhuhuXingcheng != 'null' ">
+                and zhuhu.zhuhu_xingcheng like CONCAT('%',#{params.zhuhuXingcheng},'%')
+            </if>
+            <if test=" params.zhuhuContent != '' and params.zhuhuContent != null and params.zhuhuContent != 'null' ">
+                and zhuhu.zhuhu_content like CONCAT('%',#{params.zhuhuContent},'%')
+            </if>
+            <if test="params.zhuhuTypes != null">
+                and zhuhu.zhuhu_types = #{params.zhuhuTypes}
+            </if>
+
+            <if test=" params.zhuhuTimeStart != '' and params.zhuhuTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(zhuhu.zhuhu_time) >= UNIX_TIMESTAMP(#{params.zhuhuTimeStart}) ]]>
+            </if>
+            <if test=" params.zhuhuTimeEnd != '' and params.zhuhuTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(zhuhu.zhuhu_time) <= UNIX_TIMESTAMP(#{params.zhuhuTimeEnd}) ]]>
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(zhuhu.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(zhuhu.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+
+    <select id="countTodayNumber"  resultType="java.lang.Integer" >
+        select count(*) from shangbao a
+        where date_format(a.create_time, '%Y-%m-%d' ) = date_format(NOW(), '%Y-%m-%d' )
+    </select>
+
+
+</mapper>
